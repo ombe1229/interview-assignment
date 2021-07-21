@@ -1,7 +1,9 @@
-from discord.ext import commands
 from typing import TYPE_CHECKING
-from submits import *
+
 import discord
+from discord.ext import commands
+
+from submits import *
 
 if TYPE_CHECKING:
     from bot import Bot
