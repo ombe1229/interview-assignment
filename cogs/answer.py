@@ -18,13 +18,14 @@ class Answer(commands.Cog):
         def add_submitted(i, submitted):
             embed.add_field(
                 name=f"**{i+1}. {submitted.id}**",
-                value=f"{datetime.fromtimestamp(submitted.date)}\n[초대 링크](https://discord.com/oauth2/authorize?client_id={submitted.id}&scope=bot&guild_id=653083797763522580)",
+                value=
+                f"{datetime.fromtimestamp(submitted.date)}\n[초대 링크](https://discord.com/oauth2/authorize?client_id={submitted.id}&scope=bot&guild_id=653083797763522580)",
                 inline=False,
             )
 
-        embed = discord.Embed(
-            title=":rocket: ToDo List", color=discord.Color.green(), description="_ _"
-        )
+        embed = discord.Embed(title=":rocket: ToDo List",
+                              color=discord.Color.green(),
+                              description="_ _")
 
         if not query:
             for i, submitted in enumerate(submits):
