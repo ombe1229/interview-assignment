@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 import discord
-from discord.embeds import Embed
 from discord.ext import commands
 
 if TYPE_CHECKING:
@@ -45,18 +44,18 @@ class KDBL(commands.Cog):
 
     @commands.command()
     async def approve(self, ctx: commands.Context, query: int):
-        for i in submits:
-            if i.id == query:
-                approved_submits.append(submits.pop(submits.index(i)))
-                return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
+        if bot := self._submits_dict.get(query):
+            approved_submits.append(submits.pop(submits.index(bot)))
+            del self._submits_dict[query]
+            return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니니다."))
 
     @commands.command()
     async def deny(self, ctx: commands.Context, query: int):
-        for i in submits:
-            if i.id == query:
-                submits.remove(submits.index(i))
-                return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
+        if bot := self._submits_dict.get(query):
+            submits.remove(bot)
+            del self._submits_dict[query]
+            return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
 
