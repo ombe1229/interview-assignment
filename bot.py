@@ -1,5 +1,6 @@
 from discord.ext import commands
 import os
+from utils.submits import Queue
 
 import cogs
 
@@ -7,11 +8,12 @@ import cogs
 class Bot(commands.Bot):
     def __init__(self, **kwargs):
         super().__init__(command_prefix="!", help_command=None, **kwargs)
-
+        self.submits_manager = Queue()
         cogs.load(self)
 
     async def on_ready(self):
         print(f"Logged in as {self.user.name}")
+        self.submits_manager.init()
 
     async def on_command_error(self, ctx: commands.Context, exception: Exception):
         if isinstance(exception, commands.CommandNotFound):
