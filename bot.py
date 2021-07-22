@@ -16,6 +16,8 @@ class Bot(commands.Bot):
     async def on_command_error(self, ctx: commands.Context, exception: Exception):
         if isinstance(exception, commands.CommandNotFound):
             return
+        elif isinstance(exception, commands.MissingRequiredArgument):
+            return await ctx.send("인자값이 부족합니다.")
 
         return await ctx.send(f"Error: {exception}")
 
