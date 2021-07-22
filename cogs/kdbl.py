@@ -46,7 +46,8 @@ class KDBL(commands.Cog):
     @commands.command()
     async def approve(self, ctx: commands.Context, query: int):
         if bot := self._submits_dict.get(query):
-            approved_submits.append(submits.pop(submits.index(bot)))
+            submits.remove(bot)
+            approved_submits.append(bot)
             del self._submits_dict[query]
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니니다."))
