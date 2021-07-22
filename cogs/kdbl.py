@@ -23,7 +23,7 @@ class KDBL(commands.Cog):
             for i, bot in enumerate(self._submits_dict.values()):
                 embed.add_field(
                     name=f"{i + 1}: {bot.id}",
-                    value=datetime.fromtimestamp(bot.date),
+                    value=f"심사 신청 일자: {datetime.fromtimestamp(bot.date)}",
                     inline=False,
                 )
             return await ctx.send(embed=embed)
@@ -38,7 +38,8 @@ class KDBL(commands.Cog):
 
         url = "https://discord.com/oauth2/authorize?client_id={bot.id}&scope=bot&guild_id=653083797763522580"
         embed = discord.Embed(
-            title=f"{bot.id}", description=f"{url}\n{datetime.fromtimestamp(bot.date)}"
+            title=f"{bot.id}",
+            description=f"[초대 링크]({url})\n심사 신청 일자: {datetime.fromtimestamp(bot.date)}",
         )
         return await ctx.send(embed=embed)
 
