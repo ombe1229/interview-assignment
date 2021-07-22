@@ -50,7 +50,7 @@ class KDBL(commands.Cog):
             approved_submits.append(bot)
             del self._submits_dict[query]
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
-        return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니니다."))
+        return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
     @commands.command()
     async def deny(self, ctx: commands.Context, query: int):
