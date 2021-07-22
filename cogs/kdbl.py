@@ -6,8 +6,6 @@ from discord.ext import commands
 if TYPE_CHECKING:
     from bot import Bot
 
-from submits import submits, approved_submits
-
 
 class KDBL(commands.Cog):
     def __init__(self, bot: "Bot"):
@@ -30,13 +28,7 @@ class KDBL(commands.Cog):
         if query - 1 < len(self.bot.submits_manager.items):
             bot = self.bot.submits_manager.items[query - 1]
         else:
-            if not (
-                bot := list(
-                    filter(
-                        lambda item: item["id"] == query, self.bot.submits_manager.items
-                    )
-                )[0]
-            ):
+            if not (bot := self.bot.submits_manager.find_by_id(query)):
                 return await ctx.send(
                     embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇을 찾지 못했습니다.")
                 )
@@ -53,18 +45,15 @@ class KDBL(commands.Cog):
 
     @commands.command()
     async def approve(self, ctx: commands.Context, query: int):
-        if bot := self._submits_dict.get(query):
-            submits.remove(bot)
-            approved_submits.append(bot)
-            del self._submits_dict[query]
+        if bot := self.bot.submits_manager.find_by_id(query):
+            self.bot.submits_manager.approve(bot)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
     @commands.command()
     async def deny(self, ctx: commands.Context, query: int):
-        if bot := self._submits_dict.get(query):
-            submits.remove(bot)
-            del self._submits_dict[query]
+        if bot := self.bot.submits_manager.find_by_id(query):
+            self.bot.submits_manager.deny(bot)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
