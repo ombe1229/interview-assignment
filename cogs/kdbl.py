@@ -12,34 +12,42 @@ from submits import submits, approved_submits
 class KDBL(commands.Cog):
     def __init__(self, bot: "Bot"):
         self.bot = bot
-        self._submits_dict: dict[int, Bot] = {bot.id: bot for bot in submits}
 
     @commands.command()
     async def todo(self, ctx: commands.Context, query: Optional[int] = None):
         if not query:
-            if not self._submits_dict:
+            if not self.bot.submits_manager.items:
                 return await ctx.send(embed=discord.Embed(title="현재 대기 중인 봇이 없습니다."))
             embed = discord.Embed(title="현재 대기 중인 봇 목록")
-            for i, bot in enumerate(self._submits_dict.values()):
+            for i, info in enumerate(self.bot.submits_manager.items):
                 embed.add_field(
-                    name=f"{i + 1}: {bot.id}",
-                    value=f"심사 신청 일자: {datetime.fromtimestamp(bot.date)}",
+                    name=f"{i + 1}: {info['id']}",
+                    value=f"심사 신청 일자: {datetime.fromtimestamp(info['timestamp'])}",
                     inline=False,
                 )
             return await ctx.send(embed=embed)
 
-        if query - 1 < len(self._submits_dict):
-            bot = submits[query - 1]
+        if query - 1 < len(self.bot.submits_manager.items):
+            bot = self.bot.submits_manager.items[query - 1]
         else:
-            if not (bot := self._submits_dict.get(query)):
+            if not (
+                bot := list(
+                    filter(
+                        lambda item: item["id"] == query, self.bot.submits_manager.items
+                    )
+                )[0]
+            ):
                 return await ctx.send(
                     embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇을 찾지 못했습니다.")
                 )
 
-        url = f"https://discord.com/oauth2/authorize?client_id={bot.id}&scope=bot&guild_id=653083797763522580"
+        url = discord.utils.oauth_url(
+            self.bot.user.id,
+            guild=self.bot.get_guild(653083797763522580),
+        )
         embed = discord.Embed(
-            title=f"{bot.id}",
-            description=f"[초대 링크]({url})\n심사 신청 일자: {datetime.fromtimestamp(bot.date)}",
+            title=f"{bot['id']}",
+            description=f"[초대 링크]({url})\n심사 신청 일자: {datetime.fromtimestamp(bot['timestamp'])}",
         )
         return await ctx.send(embed=embed)
 
