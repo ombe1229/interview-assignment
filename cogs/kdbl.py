@@ -36,7 +36,7 @@ class KDBL(commands.Cog):
                     embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇을 찾지 못했습니다.")
                 )
 
-        url = "https://discord.com/oauth2/authorize?client_id={bot.id}&scope=bot&guild_id=653083797763522580"
+        url = f"https://discord.com/oauth2/authorize?client_id={bot.id}&scope=bot&guild_id=653083797763522580"
         embed = discord.Embed(
             title=f"{bot.id}",
             description=f"[초대 링크]({url})\n심사 신청 일자: {datetime.fromtimestamp(bot.date)}",
