@@ -29,7 +29,7 @@ class KDBL(commands.Cog):
             return await ctx.send(embed=embed)
 
         if query - 1 < len(self._submits_dict):
-            bot = list(self._submits_dict.values())[query - 1]
+            bot = submits[query - 1]
         else:
             if not (bot := self._submits_dict.get(query)):
                 return await ctx.send(
