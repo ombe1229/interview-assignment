@@ -13,14 +13,15 @@ from submits import submits, approved_submits
 class KDBL(commands.Cog):
     def __init__(self, bot: "Bot"):
         self.bot = bot
+        self._submits_dict: dict[int, Bot] = {bot.id: bot for bot in submits}
 
     @commands.command()
     async def todo(self, ctx: commands.Context, query: Optional[int] = None):
         if not query:
-            if not submits:
+            if not self._submits_dict:
                 return await ctx.send(embed=discord.Embed(title="현재 대기 중인 봇이 없습니다."))
             embed = discord.Embed(title="현재 대기 중인 봇 목록")
-            for i, bot in enumerate(submits):
+            for i, bot in enumerate(self._submits_dict.values()):
                 embed.add_field(
                     name=f"{i + 1}: {bot.id}",
                     value=datetime.fromtimestamp(bot.date),
@@ -28,25 +29,17 @@ class KDBL(commands.Cog):
                 )
             return await ctx.send(embed=embed)
 
-        if query <= 0:
-            return await ctx.send(embed=discord.Embed(title="인자는 1 이상의 숫자여야 합니다."))
-
-        if query > len(submits):
-            for i in submits:
-                if i.id == query:
-                    bot = i
-                    break
+        if query - 1 < len(self._submits_dict):
+            bot = list(self._submits_dict.values())[query - 1]
         else:
-            bot = submits[query - 1]
+            if not (bot := self._submits_dict.get(query)):
+                return await ctx.send(
+                    embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇을 찾지 못했습니다.")
+                )
 
-        if "bot" not in locals() or not bot:
-            return await ctx.send(
-                embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇이 없습니다.")
-            )
         url = "https://discord.com/oauth2/authorize?client_id={bot.id}&scope=bot&guild_id=653083797763522580"
         embed = discord.Embed(
-            title=f"{bot.id}",
-            description=f"{url}\n{datetime.fromtimestamp(bot.date)}",
+            title=f"{bot.id}", description=f"{url}\n{datetime.fromtimestamp(bot.date)}"
         )
         return await ctx.send(embed=embed)
 
