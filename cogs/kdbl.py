@@ -55,7 +55,7 @@ class KDBL(commands.Cog):
     async def deny(self, ctx: commands.Context, query: int):
         for i in submits:
             if i.id == query:
-                submits.pop(submits.index(i))
+                submits.remove(submits.index(i))
                 return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
