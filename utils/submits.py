@@ -22,15 +22,11 @@ class Queue:
 
     def approve(self, bot: dict[str, Any]) -> NoReturn:
         self.__items.remove(bot)
-        for i in submits:
-            if i.id == bot["id"]:
-                submits.remove(i)
-                approved_submits.append(i)
-                break
+        item = list(filter(lambda item: item.id == bot["id"], submits))[0]
+        submits.remove(item)
+        approved_submits.append(item)
 
     def deny(self, bot: dict[str, Any]) -> NoReturn:
         self.__items.remove(bot)
-        for i in submits:
-            if i.id == bot["id"]:
-                submits.remove(i)
-                break
+        item = list(filter(lambda item: item.id == bot["id"], submits))[0]
+        submits.remove(item)
