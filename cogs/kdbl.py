@@ -10,14 +10,15 @@ if TYPE_CHECKING:
 class KDBL(commands.Cog):
     def __init__(self, bot: "Bot"):
         self.bot = bot
+        self.submits_manager = bot.submits_manager
 
     @commands.command()
     async def todo(self, ctx: commands.Context, query: Optional[int] = None):
         if not query:
-            if not self.bot.submits_manager.items:
+            if not self.submits_manager.items:
                 return await ctx.send(embed=discord.Embed(title="현재 대기 중인 봇이 없습니다."))
             embed = discord.Embed(title="현재 대기 중인 봇 목록")
-            for i, info in enumerate(self.bot.submits_manager.items):
+            for i, info in enumerate(self.submits_manager.items):
                 embed.add_field(
                     name=f"{i + 1}: {info['id']}",
                     value=f"심사 신청 일자: {datetime.fromtimestamp(info['timestamp'])}",
@@ -25,10 +26,10 @@ class KDBL(commands.Cog):
                 )
             return await ctx.send(embed=embed)
 
-        if query - 1 < len(self.bot.submits_manager.items):
-            bot = self.bot.submits_manager.items[query - 1]
+        if query - 1 < len(self.submits_manager.items):
+            bot = self.submits_manager.items[query - 1]
         else:
-            if not (bot := self.bot.submits_manager.find_by_id(query)):
+            if not (bot := self.submits_manager.find_by_id(query)):
                 return await ctx.send(
                     embed=discord.Embed(title="해당 인덱스 또는 ID를 가진 봇을 찾지 못했습니다.")
                 )
@@ -45,15 +46,15 @@ class KDBL(commands.Cog):
 
     @commands.command()
     async def approve(self, ctx: commands.Context, query: int):
-        if bot := self.bot.submits_manager.find_by_id(query):
-            self.bot.submits_manager.approve(bot)
+        if bot := self.submits_manager.find_by_id(query):
+            self.submits_manager.approve(bot)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
     @commands.command()
     async def deny(self, ctx: commands.Context, query: int):
-        if bot := self.bot.submits_manager.find_by_id(query):
-            self.bot.submits_manager.deny(bot)
+        if bot := self.submits_manager.find_by_id(query):
+            self.submits_manager.deny(bot)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
