@@ -47,14 +47,14 @@ class KDBL(commands.Cog):
     @commands.command()
     async def approve(self, ctx: commands.Context, query: int):
         if bot := self.submits_manager.find_by_id(query):
-            self.submits_manager.approve(bot)
+            self.submits_manager.perform(bot, True)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 승인하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
     @commands.command()
     async def deny(self, ctx: commands.Context, query: int):
         if bot := self.submits_manager.find_by_id(query):
-            self.submits_manager.deny(bot)
+            self.submits_manager.perform(bot)
             return await ctx.send(embed=discord.Embed(title=f"{query} 를 거절하였습니다."))
         return await ctx.send(embed=discord.Embed(title=f"{query} 를 찾지 못했습니다."))
 
